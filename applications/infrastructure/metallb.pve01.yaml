@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: metallb
+  namespace: argocd
+
+spec:
+  project: default
+
+  sources:
+    - repoURL: https://metallb.github.io/metallb
+      chart: metallb
+      targetRevision: 0.16.2
+      helm:
+        releaseName: metallb
+        valueFiles:
+          - $values/values/metallb/common.yaml
+          - $values/values/metallb/pve01.yaml
+
+    - repoURL: https://github.com/AposLaz/homelab-gitops.git
+      targetRevision: main
+      ref: values
+
+    # Deploy additional Kubernetes manifests
+    - repoURL: https://github.com/AposLaz/homelab-gitops.git
+      targetRevision: main
+      path: manifests/metallb/pve01
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: metallb-system
+
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: false
+    syncOptions:
+      - CreateNamespace=true

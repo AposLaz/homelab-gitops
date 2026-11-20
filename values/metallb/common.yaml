@@ -1,0 +1,22 @@
+frrk8s:
+  enabled: false
+  
+controller:
+  logLevel: info
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      memory: 256Mi
+
+speaker:
+  logLevel: info
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      memory: 256Mi
