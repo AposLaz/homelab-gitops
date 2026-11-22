@@ -1,0 +1,68 @@
+global:
+  nodeSelector:
+    storage.longhorn.io/worker: "true"
+persistence:
+  reclaimPolicy: Retain
+  volumeBindingMode: "WaitForFirstConsumer"
+  # useful for backups
+  recurringJobSelector:
+    # -- Setting that allows you to enable the recurring job selector for a Longhorn StorageClass.
+    enable: false
+    # -- Recurring job selector for a Longhorn StorageClass. Ensure that quotes are used correctly when specifying job parameters. (Example: `[{"name":"backup", "isGroup":true}]`)
+    jobList: []
+preUpgradeChecker:
+  jobEnabled: false
+defaultSettings:
+  createDefaultDiskLabeledNodes: true
+  defaultDataPath: /var/lib/longhorn
+  # -- Default data locality. A Longhorn volume has data locality if a local replica of the volume exists on the same node as the pod that is using the volume.
+  defaultDataLocality: disabled
+  # -- Setting that automatically rebalances replicas when an available node is discovered.
+  replicaAutoBalance: best-effort
+  storageReservedPercentageForDefaultDisk: 30
+  backupExecutionTimeout: 10
+  recurringSuccessfulJobsHistoryLimit: 3
+  recurringFailedJobsHistoryLimit: 5
+  recurringJobMaxRetention: 30
+  allowVolumeCreationWithDegradedAvailability: true
+  systemManagedComponentsNodeSelector: "storage.longhorn.io/worker:true"
+  v1DataEngine: true
+  v2DataEngine: false
+  logLevel: Info
+  upgradeChecker: true
+defaultBackupStore:
+  # -- Endpoint used to access the default backupstore. (Options: "NFS", "CIFS", "AWS", "GCP", "AZURE")
+  backupTarget: ~
+  # -- Name of the Kubernetes secret associated with the default backup target.
+  backupTargetCredentialSecret: ~
+  # -- Number of seconds that Longhorn waits before checking the default backupstore for new backups. The default value is "300". When the value is "0", polling is disabled.
+  pollInterval: ~
+longhornGlobalManager:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+longhornUI:
+  replicas: 1
+metrics:
+  serviceMonitor:
+    # -- Setting that allows the creation of a Prometheus ServiceMonitor resource for Longhorn Manager components.
+    enabled: false
+    # -- Additional labels for the Prometheus ServiceMonitor resource.
+    additionalLabels: {}
+    # -- Annotations for the Prometheus ServiceMonitor resource.
+    annotations: {}
+    # -- Interval at which Prometheus scrapes the metrics from the target.
+    interval: ""
+    # -- Timeout after which Prometheus considers the scrape to be failed.
+    scrapeTimeout: ""
+    # -- Configures the relabeling rules to apply the target's metadata labels. See the [Prometheus Operator
+    # documentation](https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.Endpoint) for
+    # formatting details.
+    relabelings: []
+    # -- Configures the relabeling rules to apply to the samples before ingestion. See the [Prometheus Operator
+    # documentation](https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.Endpoint) for
+    # formatting details.
+    metricRelabelings: []
+    # -- Per-scrape sample limit. A value of 0 (default) omits sampleLimit.
+    sampleLimit: 0
