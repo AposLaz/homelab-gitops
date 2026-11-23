@@ -24,7 +24,7 @@ spec:
     # Deploy additional Kubernetes manifests
     - repoURL: https://github.com/AposLaz/homelab-gitops.git
       targetRevision: main
-      path: manifests/metallb/pve01
+      path: manifests/metrics-server/pve01
 
   destination:
     server: https://kubernetes.default.svc
