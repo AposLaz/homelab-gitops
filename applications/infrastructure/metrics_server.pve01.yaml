@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: metrics-server
+  namespace: argocd
+
+spec:
+  project: default
+
+  sources:
+    - repoURL: https://kubernetes-sigs.github.io/metrics-server/
+      chart: metrics-server
+      targetRevision: 3.14.0
+      helm:
+        releaseName: metrics-server
+        valueFiles:
+          - $values/values/metrics-server/common.yaml
+          - $values/values/metrics-server/pve01.yaml
+
+    - repoURL: https://github.com/AposLaz/homelab-gitops.git
+      targetRevision: main
+      ref: values
+
+    # Deploy additional Kubernetes manifests
+    - repoURL: https://github.com/AposLaz/homelab-gitops.git
+      targetRevision: main
+      path: manifests/metallb/pve01
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: false
+    syncOptions:
+      - CreateNamespace=true
