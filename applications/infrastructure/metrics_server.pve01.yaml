@@ -21,11 +21,6 @@ spec:
       targetRevision: main
       ref: values
 
-    # Deploy additional Kubernetes manifests
-    - repoURL: https://github.com/AposLaz/homelab-gitops.git
-      targetRevision: main
-      path: manifests/metrics-server/pve01
-
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system
