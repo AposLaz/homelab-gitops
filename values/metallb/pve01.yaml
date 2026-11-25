@@ -1,1 +1,8 @@
-{}
+prometheus:
+  scrapeAnnotations: false
+  rbacPrometheus: false
+
+  serviceMonitor:
+    enabled: true
+    # 0.16.2's schema rejects duration strings. Inherit Prometheus's global 30s.
+    interval: null

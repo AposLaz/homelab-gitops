@@ -1,0 +1,255 @@
+defaultRules:
+  create: true
+  rules:
+    windows: false
+
+alertmanager:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        memory: 256Mi
+
+grafana:
+  enabled: true
+
+  replicas: 1
+
+  defaultDashboardsEnabled: true
+  defaultDashboardsTimezone: Europe/Athens
+  defaultDashboardsEditable: false
+  defaultDashboardsInterval: 1m
+
+  admin:
+    existingSecret: grafana-admin
+    userKey: admin-user
+    passwordKey: admin-password
+
+  persistence:
+    enabled: true
+    type: sts
+    accessModes:
+      - ReadWriteOnce
+    size: 2Gi
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      memory: 512Mi
+
+  sidecar:
+      enableUniqueFilenames: true
+
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          memory: 128Mi
+
+      dashboards:
+        enabled: true
+        label: grafana_dashboard
+        labelValue: "1"
+        searchNamespace: ALL
+        folderAnnotation: grafana_folder
+        resource: configmap
+        annotations:
+          grafana_folder: Kubernetes
+
+        provider:
+          allowUiUpdates: false
+          foldersFromFilesStructure: true
+
+      datasources:
+        enabled: true
+        defaultDatasourceEnabled: true
+        isDefaultDatasource: true
+        name: Prometheus
+        uid: prometheus
+
+        alertmanager:
+          enabled: true
+
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+
+kubernetesServiceMonitors:
+  enabled: true
+
+kubeApiServer:
+  enabled: true
+
+kubelet:
+  enabled: true
+
+  serviceMonitor:
+    cAdvisor: true
+    cAdvisorInterval: 30s
+    probes: true
+    resource: false
+
+kubeControllerManager:
+  enabled: true
+
+coreDns:
+  enabled: true
+
+kubeDns:
+  enabled: false
+
+kubeEtcd:
+  enabled: true
+
+kubeScheduler:
+  enabled: true
+
+kubeProxy:
+  enabled: true
+
+kubeStateMetrics:
+  enabled: true
+
+kube-state-metrics:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      memory: 256Mi
+
+nodeExporter:
+  enabled: true
+
+  operatingSystems:
+    linux:
+      enabled: true
+    aix:
+      enabled: false
+    darwin:
+      enabled: false
+
+prometheus-node-exporter:
+  # Use only the exporter already bundled with this stack.
+  prometheus:
+    monitor:
+      enabled: true
+      interval: 30s
+  resources:
+    requests:
+      cpu: 25m
+      memory: 32Mi
+    limits:
+      memory: 128Mi
+
+
+prometheusOperator:
+  enabled: true
+
+  revisionHistoryLimit: 3
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      memory: 512Mi
+
+  admissionWebhooks:
+    enabled: true
+
+    patch:
+      enabled: true
+
+  prometheusConfigReloader:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        memory: 128Mi
+
+
+prometheus:
+  enabled: true
+
+  ingress:
+    enabled: false
+
+  prometheusSpec:
+    replicas: 1
+    shards: 1
+
+    scrapeInterval: 30s
+    scrapeTimeout: 10s
+    evaluationInterval: 30s
+
+    retention: 15d
+    retentionSize: 15GiB
+
+    walCompression: true
+
+    externalLabels:
+      cluster: homelab
+      environment: homelab
+
+    resources:
+      requests:
+        cpu: 250m
+        memory: 1Gi
+      limits:
+        memory: 3Gi
+
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 20Gi
+
+    persistentVolumeClaimRetentionPolicy:
+      whenDeleted: Retain
+      whenScaled: Retain
+
+    ruleSelectorNilUsesHelmValues: false
+    ruleSelector: {}
+    ruleNamespaceSelector: {}
+
+    serviceMonitorSelectorNilUsesHelmValues: false
+    # Select every ServiceMonitor, across every namespace, regardless of release labels.
+    serviceMonitorSelector: {}
+    serviceMonitorNamespaceSelector: {}
+
+    podMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelector: {}
+    podMonitorNamespaceSelector: {}
+
+    probeSelectorNilUsesHelmValues: false
+    probeSelector: {}
+    probeNamespaceSelector: {}
+
+    scrapeConfigSelectorNilUsesHelmValues: false
+    scrapeConfigSelector: {}
+    scrapeConfigNamespaceSelector: {}
+
+    enableAdminAPI: false
+    enableRemoteWriteReceiver: false
+
+    thanos: {}
+
+thanosRuler:
+  enabled: false
