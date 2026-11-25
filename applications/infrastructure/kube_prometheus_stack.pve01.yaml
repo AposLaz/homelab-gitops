@@ -29,9 +29,9 @@ spec:
       targetRevision: main
       path: values/monitoring/dashboards
 
-    - repoURL: https://github.com/AposLaz/homelab-gitops.git
-      targetRevision: main
-      path: values/monitoring/rules
+    # - repoURL: https://github.com/AposLaz/homelab-gitops.git
+    #   targetRevision: main
+    #   path: values/monitoring/rules
 
   destination:
     server: https://kubernetes.default.svc
