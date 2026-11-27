@@ -21,6 +21,10 @@ spec:
       targetRevision: main
       ref: values
 
+    - repoURL: https://github.com/AposLaz/homelab-gitops.git
+      targetRevision: main
+      path: manifests/longhorn
+
   destination:
     server: https://kubernetes.default.svc
     namespace: longhorn-system
